@@ -8,8 +8,14 @@
 
   <ItemGroup>
     <None Remove="Scripts\" />
+    <None Remove="MySqlConnector" />
+    <None Remove="MySql.Data" />
+    <None Remove="System.Data.Odbc" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Scripts\" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="MySql.Data" Version="8.0.31" />
   </ItemGroup>
 </Project>

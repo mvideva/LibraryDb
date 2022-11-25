@@ -1,11 +1,52 @@
 ﻿@page
 @model IndexModel
+@using MySql.Data.MySqlClient
 @{
-    ViewData["Title"] = "Home page";
+    ViewData["Title"] = "All Books";
+
+    // As described in https://dev.mysql.com/doc/connector-net/en/connector-net-tutorials-sql-command.html
+    var connStr = "server=localhost;port=3306;database=LibraryDb;user=lib;password=rary";
+    var conn = new MySqlConnection(connStr);
+    conn.Open();
+
+    var sql = @"
+        SELECT books.title, books.author, books.genre, customers.name, checkouts.due_date
+        FROM((books
+        INNER JOIN checkouts ON checkouts.book_id = books.id)
+        INNER JOIN customers ON checkouts.customer_id = customers.id)";
+    var cmd = new MySqlCommand(sql, conn);
+    var rdr = cmd.ExecuteReader();
 }
 
+<style>
+    th {
+        width: 15em;
+        text-align: left;
+    }
+    td {
+        text-align:left;
+    }
+</style>
+
 <div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    <table>
+        <tr>
+            <th>Title</th>
+            <th>Author</th>
+            <th>Genre</th>
+            <th>Checked out by</th>
+            <th>Due Date</th>
+        </tr>
+        @while (rdr.Read())
+        {
+    <tr>
+        <td>@rdr[0]</td>
+        <td>@rdr[1]</td>
+        <td>@rdr[2]</td>
+        <td>@rdr[3]</td>
+        <td>@rdr[4]</td>
+    </tr>
+        }
+    </table>
 </div>
 
