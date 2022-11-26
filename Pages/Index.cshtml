@@ -2,7 +2,7 @@
 @model IndexModel
 @using MySql.Data.MySqlClient
 @{
-    ViewData["Title"] = "All Books";
+    ViewData["Title"] = "Books";
 
     // As described in https://dev.mysql.com/doc/connector-net/en/connector-net-tutorials-sql-command.html
     var connStr = "server=localhost;port=3306;database=LibraryDb;user=lib;password=rary";
@@ -28,25 +28,29 @@
     }
 </style>
 
+<h2>Books</h2>
+
 <div class="text-center">
-    <table>
-        <tr>
-            <th>Title</th>
-            <th>Author</th>
-            <th>Genre</th>
-            <th>Checked out by</th>
-            <th>Due Date</th>
-        </tr>
-        @while (rdr.Read())
-        {
-    <tr>
-        <td>@rdr[0]</td>
-        <td>@rdr[1]</td>
-        <td>@rdr[2]</td>
-        <td>@rdr[3]</td>
-        <td>@rdr[4]</td>
-    </tr>
-        }
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Author</th>
+                <th>Genre</th>
+                <th>Checked out by</th>
+                <th>Due Date</th>
+            </tr>
+            </thead>
+            @while (rdr.Read())
+            {
+                <tr>
+                    <td>@rdr[0]</td>
+                    <td>@rdr[1]</td>
+                    <td>@rdr[2]</td>
+                    <td>@rdr[3]</td>
+                    <td>@rdr[4]</td>
+                </tr>
+            }
     </table>
 </div>
 

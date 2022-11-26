@@ -8,6 +8,16 @@ INSERT INTO books (id, title, author, genre) VALUES
 ('975-3-16-148410-0', 'Abounding Heights', 'Anna Spells', 'Drama');
 INSERT INTO books (id, title, author, genre) VALUES 
 ('974-3-16-148410-0', 'Green Towers', 'Amy Towers', 'Mythical');
+INSERT INTO books (id, title, author, genre) VALUES 
+('979-3-17-148810-0', 'Hero', 'Steve Maxwell', 'Thriller');
+INSERT INTO books (id, title, author, genre) VALUES 
+('957-3-16-148610-0', 'My House', 'Tony Stills', 'Comedy');
+INSERT INTO books (id, title, author, genre) VALUES 
+('996-3-16-128410-0', 'Yellow Trees', 'Erika Harves', 'Non-Fiction');
+INSERT INTO books (id, title, author, genre) VALUES 
+('905-3-16-148310-0', 'Up Above', 'Lance Treedy', 'Thriller');
+INSERT INTO books (id, title, author, genre) VALUES 
+('914-3-16-146410-0', 'The Medow', 'Maddie Phase', 'Drama');
 
 INSERT INTO customers (id, name, phone_number, address) VALUES 
 ('01', 'Alison Adams', '345-725-2681', '12 Main St.');
