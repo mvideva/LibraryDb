@@ -1,21 +1,7 @@
 ﻿@page
 @model IndexModel
-@using MySql.Data.MySqlClient
 @{
     ViewData["Title"] = "Books";
-
-    // As described in https://dev.mysql.com/doc/connector-net/en/connector-net-tutorials-sql-command.html
-    var connStr = "server=localhost;port=3306;database=LibraryDb;user=lib;password=rary";
-    var conn = new MySqlConnection(connStr);
-    conn.Open();
-
-    var sql = @"
-        SELECT books.title, books.author, books.genre, customers.name, checkouts.due_date
-        FROM((books
-        INNER JOIN checkouts ON checkouts.book_id = books.id)
-        INNER JOIN customers ON checkouts.customer_id = customers.id)";
-    var cmd = new MySqlCommand(sql, conn);
-    var rdr = cmd.ExecuteReader();
 }
 
 <style>
@@ -30,6 +16,15 @@
 
 <h2>Books</h2>
 
+<form>
+    <p>
+        Title: <input type="text" asp-for="SearchTitle" />
+        Author: <input type="text" asp-for="SearchAuthor" />
+        <input type="submit" value="Search" />
+    </p>
+</form>
+
+
 <div class="text-center">
     <table class="table">
         <thead>
@@ -41,14 +36,14 @@
                 <th>Due Date</th>
             </tr>
             </thead>
-            @while (rdr.Read())
+            @foreach(var book in Model.Books)
             {
                 <tr>
-                    <td>@rdr[0]</td>
-                    <td>@rdr[1]</td>
-                    <td>@rdr[2]</td>
-                    <td>@rdr[3]</td>
-                    <td>@rdr[4]</td>
+                    <td>@book.Title</td>
+                    <td>@book.Author</td>
+                    <td>@book.Genre</td>
+                    <td>@book.CheckedOutBy</td>
+                    <td>@book.CheckedOutUntil</td>
                 </tr>
             }
     </table>
