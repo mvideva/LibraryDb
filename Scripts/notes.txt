@@ -1,0 +1,38 @@
+﻿
+
+dotnet ef dbcontext scaffold "server=localhost;port=3306;database=LibraryDb;user=lib;password=rary" MySql.EntityFrameworkCore -o Entities -t books -t charges -t checkouts -t customers -t staff -f
+
+
+
+----Queries----
+
+Search for all books that are NOT checked out:
+
+"SELECT books.*
+FROM books, checkouts
+WHERE books.id NOT IN (SELECT book_id IN checkouts)"
+
+Add new customer:
+
+parameters: (string id, string name, string phone_number, string address)
+"INSERT INTO customers (id, name, phone_number, address) VALUES 
+(" + id + "," + name + "," + phone_number + "," + address + ")"
+
+Checkout book:
+
+parameters: (string customer_id, string book_id, DateTime due_date, DateTime return_date)
+"INSERT INTO checkouts (customer_id, book_id, due_date, return_date) VALUES 
+(" customer_id + "," + book_id + "," + due_date + ",null)"
+
+Return book:
+
+parameters: (string customer, string book, DateTime return)
+"UPDATE checkouts
+SET return_date = return
+WHERE customer_id = customer & book_id = book"
+
+Pay fee:
+
+parameters: (int customer_id, string book_id, int staff_id, decimal amount_due, DateTime payment_date, string description)
+"INSERT INTO charges (customer_id, book_id, staff_id, amount_due, payment_date, description) VALUES 
+(" + customer_id + "," + book_id + "," + staff_id + "," + amount_due + "," + payment_date + "," + description + ")"

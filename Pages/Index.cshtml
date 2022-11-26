@@ -34,6 +34,7 @@
                 <th>Genre</th>
                 <th>Checked out by</th>
                 <th>Due Date</th>
+                <th>Action</th>
             </tr>
             </thead>
             @foreach(var book in Model.Books)
@@ -44,6 +45,28 @@
                     <td>@book.Genre</td>
                     <td>@book.CheckedOutBy</td>
                     <td>@book.CheckedOutUntil</td>
+                    <td>    
+                        <form method="post">
+                            @if (book.CheckedOutBy != null && book.CheckedOutBy.Length > 0)
+                            {
+                                <input asp-for="BookAction" type="submit" value="Return" />
+                            }
+                            else
+                            {
+                                <p>
+                                    <input asp-for="BookAction" type="submit" value="Check Out" />
+
+                                    <select asp-for="BookCheckedOutBy">
+                                        @foreach (var cust in Model.Customers)
+                                        {
+                                            <option value="@cust.Id">@cust.Name</option>
+                                        }
+                                    </select>
+                                </p>
+                            }
+                            <input asp-for="BookIdCheckedOut" type="hidden" value="@book.Id" />
+                        </form>
+                    </td>
                 </tr>
             }
     </table>
