@@ -52,13 +52,13 @@ INSERT INTO staff (id,name,position,shift_hours) VALUES
 INSERT INTO staff (id,name,position,shift_hours) VALUES 
 (5,'Jim Jones','Janitor','10:00-6:00 Mon-Thurs');
 
-INSERT INTO checkouts (customer_id,book_id,due_date,return_date) VALUES 
-(1,'978-3-16-148410-0','2022-1-15','2022-1-12');
-INSERT INTO checkouts (customer_id,book_id,due_date,return_date) VALUES 
-(2,'977-3-16-148410-0','2022-2-16','2022-2-25');
-INSERT INTO checkouts (customer_id,book_id,due_date,return_date) VALUES 
-(3,'976-3-16-148410-0','2022-3-16','2022-3-15');
-INSERT INTO checkouts (customer_id,book_id,due_date,return_date) VALUES 
-(4,'975-3-16-148410-0','2022-4-15','2022-4-20');
-INSERT INTO checkouts (customer_id,book_id,due_date,return_date) VALUES 
-(5,'974-3-16-148410-0','2022-4-16','2022-4-22');
+INSERT INTO checkouts (customer_id,book_id,due_date) VALUES 
+(1,'978-3-16-148410-0','2022-1-15');
+INSERT INTO checkouts (customer_id,book_id,due_date) VALUES 
+(2,'977-3-16-148410-0','2022-2-16');
+INSERT INTO checkouts (customer_id,book_id,due_date) VALUES 
+(3,'976-3-16-148410-0','2022-3-16');
+INSERT INTO checkouts (customer_id,book_id,due_date) VALUES 
+(4,'975-3-16-148410-0','2022-4-15');
+INSERT INTO checkouts (customer_id,book_id,due_date) VALUES 
+(5,'974-3-16-148410-0','2022-4-16');

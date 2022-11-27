@@ -20,7 +20,7 @@
     <p>
         Title: <input type="text" asp-for="SearchTitle" />
         Author: <input type="text" asp-for="SearchAuthor" />
-        <input type="submit" value="Search" />
+        <input type="submit" value="Search" />        
     </p>
 </form>
 
@@ -53,7 +53,7 @@
                             }
                             else
                             {
-                                <p>
+                                <p style="width: 20em">
                                     <input asp-for="BookAction" type="submit" value="Check Out" />
 
                                     <select asp-for="BookCheckedOutBy">

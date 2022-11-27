@@ -37,25 +37,26 @@ public class IndexModel : PageModel
         {
             conn.Open();
             var sql = @"
-        SELECT books.id, books.title, books.author, books.genre, customers.name, customers.id, checkouts.due_date
-        FROM((books
-        LEFT JOIN checkouts ON checkouts.book_id = books.id)
-        LEFT JOIN customers ON checkouts.customer_id = customers.id)";
+                SELECT b.id, b.title, b.author, b.genre, c.name, MAX(co.due_date)
+                FROM books b
+                LEFT JOIN checkouts co ON co.book_id = b.id  
+                LEFT JOIN customers c ON co.customer_id = c.id
+                GROUP BY  b.id, b.title, b.author, b.genre, c.name";
 
             if (SearchTitle != null || SearchAuthor != null)
             {
                 string where;
                 if (SearchTitle != null && SearchAuthor != null)
                 {
-                    where = $" WHERE books.title LIKE '%{SearchTitle}%' AND books.author LIKE '%{SearchAuthor}%'";
+                    where = $" HAVING b.title LIKE '%{SearchTitle}%' AND b.author LIKE '%{SearchAuthor}%'";
                 }
                 else if (SearchTitle != null)
                 {
-                    where = $" WHERE books.title LIKE '%{SearchTitle}%'";
+                    where = $" HAVING b.title LIKE '%{SearchTitle}%'";
                 }
                 else
                 {
-                    where = $" WHERE books.author LIKE '%{SearchAuthor}%'";
+                    where = $" HAVING b.author LIKE '%{SearchAuthor}%'";
                 }
                 sql += where;
             }
@@ -115,19 +116,18 @@ public class IndexModel : PageModel
         {
             conn.Open();
             string sql;
-            var isCheckedOut = BookAction.Equals("Check Out");
-            if(isCheckedOut)
+            if(BookAction.Equals("Check Out"))
             {
                 var dueDate = DateTime.Now.AddDays(14).ToString("yyyy-MM-dd HH:mm:ss.fff"); 
                 sql = $"INSERT INTO checkouts (customer_id, book_id, due_date) VALUES ({BookCheckedOutBy},'{BookIdCheckedOut}','{dueDate}')";
             }
             else
             {
-                sql = $"UPDATE checkouts SET return_date = '{DateTime.Now.ToString()}' WHERE book_id = '{BookIdCheckedOut}' AND return_date IS NULL";
+                sql = $"DELETE FROM checkouts WHERE book_id = '{BookIdCheckedOut}'";
             }
 
             var cmd = new MySqlCommand(sql, conn);
-            cmd.ExecuteNonQuery();
+            var updated = cmd.ExecuteNonQuery();
         }
         catch (Exception e)
         {
@@ -136,7 +136,8 @@ public class IndexModel : PageModel
         finally
         {
             conn.Close();
-            RedirectToAction("Get");
+            OnGet();
+            RedirectToAction("Index");
         }
     }
 }

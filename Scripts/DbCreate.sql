@@ -22,7 +22,6 @@ create table checkouts (
 	customer_id int,
     book_id varchar(30),
     due_date datetime,
-	return_date datetime,
     primary key(customer_id, book_id),
 	foreign key (customer_id) references customers(id) on delete cascade,
 	foreign key (book_id) references books(id) on delete cascade
