@@ -1,4 +1,5 @@
 ﻿using LibraryApp.Models;
+using LibraryDbApp.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
@@ -35,6 +36,10 @@ public class TransactionsModel : PageModel
 
     public void OnGet()
     {
+        Charges = DbService.GetCharges();
+        Customers = DbService.GetCustomers();
+        Books = DbService.GetBooksSimple();
+        Staff = DbService.GetStaff();
     }
 }
 

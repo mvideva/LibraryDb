@@ -92,7 +92,7 @@ namespace LibraryDbApp.Services
             {
                 conn.Open();
 
-                var sql = @"SELECT cu.name, b.title, ch.description, ch.payment_date, ch.amount_due, s.name
+                var sql = @"SELECT cu.name, b.title, ch.description, ch.amount_due, ch.payment_date, s.name
                             FROM charges ch
                             LEFT JOIN customers cu ON cu.id = ch.customer_id
                             LEFT JOIN books b ON b.id = ch.book_id
@@ -103,7 +103,46 @@ namespace LibraryDbApp.Services
 
                 while (rdr.Read())
                 {
-                    customers.Add(new CustomerModel()
+                    charges.Add(new ChargesModel()
+                    {
+                        CustomerName = rdr[0].ToString(),
+                        BookName = rdr[1].ToString(),
+                        Description = rdr[2].ToString(),
+                        AmountDue = rdr[3].ToString(),
+                        PaymentDate = rdr[4].ToString(),
+                        StaffName = rdr[5].ToString()
+                    });
+                }
+            }
+            catch (Exception e)
+            {
+                Debug.Print($"An error occured ({e.Message})");
+            }
+            finally
+            {
+                rdr?.Close();
+                conn.Close();
+            }
+            return charges;
+        }
+
+        public static IList<StaffModel> GetStaff()
+        {
+            MySqlConnection conn = new MySqlConnection(connStr);
+            MySqlDataReader? rdr = null;
+            var staff = new List<StaffModel>();
+
+            try
+            {
+                conn.Open();
+
+                var sql = @"SELECT id, name FROM staff";
+                var cmd = new MySqlCommand(sql, conn);
+                rdr = cmd.ExecuteReader();
+
+                while (rdr.Read())
+                {
+                    staff.Add(new StaffModel()
                     {
                         Id = rdr[0].ToString(),
                         Name = rdr[1].ToString(),
@@ -119,7 +158,40 @@ namespace LibraryDbApp.Services
                 rdr?.Close();
                 conn.Close();
             }
-            return customers;
+            return staff;
+        }
+
+        public static IList<BookModel> GetBooksSimple()
+        {
+            MySqlConnection conn = new MySqlConnection(connStr);
+            MySqlDataReader? rdr = null;
+            var books = new List<BookModel>();
+            try
+            {
+                conn.Open();
+                var sql = "SELECT id, title FROM books";
+                var cmd = new MySqlCommand(sql, conn);
+                rdr = cmd.ExecuteReader();
+
+                while (rdr.Read())
+                {
+                    books.Add(new BookModel()
+                    {
+                        Id = rdr[0].ToString(),
+                        Title = rdr[1].ToString(),
+                    });
+                }
+            }
+            catch (Exception e)
+            {
+                Debug.Print($"An error occured ({e.Message})");
+            }
+            finally
+            {
+                rdr?.Close();
+                conn.Close();
+            }
+            return books;
         }
     }
 }
