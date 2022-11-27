@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using LibraryApp.Models;
+using LibraryDbApp.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using MySql.Data.MySqlClient;
@@ -28,83 +29,34 @@ public class IndexModel : PageModel
 
     public void OnGet()
     {
-        // As described in https://dev.mysql.com/doc/connector-net/en/connector-net-tutorials-sql-command.html
-        var connStr = "server=localhost;port=3306;database=LibraryDb;user=lib;password=rary";
-        var conn = new MySqlConnection(connStr);
-        MySqlDataReader? rdr = null;
+        
+        var sql = @"
+            SELECT b.id, b.title, b.author, b.genre, c.name, MAX(co.due_date)
+            FROM books b
+            LEFT JOIN checkouts co ON co.book_id = b.id  
+            LEFT JOIN customers c ON co.customer_id = c.id
+            GROUP BY  b.id, b.title, b.author, b.genre, c.name";
 
-        try
+        if (SearchTitle != null || SearchAuthor != null)
         {
-            conn.Open();
-            var sql = @"
-                SELECT b.id, b.title, b.author, b.genre, c.name, MAX(co.due_date)
-                FROM books b
-                LEFT JOIN checkouts co ON co.book_id = b.id  
-                LEFT JOIN customers c ON co.customer_id = c.id
-                GROUP BY  b.id, b.title, b.author, b.genre, c.name";
-
-            if (SearchTitle != null || SearchAuthor != null)
+            string where;
+            if (SearchTitle != null && SearchAuthor != null)
             {
-                string where;
-                if (SearchTitle != null && SearchAuthor != null)
-                {
-                    where = $" HAVING b.title LIKE '%{SearchTitle}%' AND b.author LIKE '%{SearchAuthor}%'";
-                }
-                else if (SearchTitle != null)
-                {
-                    where = $" HAVING b.title LIKE '%{SearchTitle}%'";
-                }
-                else
-                {
-                    where = $" HAVING b.author LIKE '%{SearchAuthor}%'";
-                }
-                sql += where;
+                where = $" HAVING b.title LIKE '%{SearchTitle}%' AND b.author LIKE '%{SearchAuthor}%'";
             }
-
-            var cmd = new MySqlCommand(sql, conn);
-            rdr = cmd.ExecuteReader();
-
-            Books = new List<BookModel>();
-
-            while (rdr.Read())
+            else if (SearchTitle != null)
             {
-                Books.Add(new BookModel()
-                {
-                    Id = rdr[0].ToString(),
-                    Title = rdr[1].ToString(),
-                    Author = rdr[2].ToString(),
-                    Genre = rdr[3].ToString(),
-                    CheckedOutBy = rdr[4].ToString(),
-                    CheckedOutUntil = rdr[5].ToString()
-                });
+                where = $" HAVING b.title LIKE '%{SearchTitle}%'";
             }
-
-            rdr.Close();
-            sql = "SELECT id, name FROM customers ORDER BY name";
-            cmd = new MySqlCommand(sql, conn);
-            rdr = cmd.ExecuteReader();
-            
-            Customers = new List<CustomerModel>();
-
-            while (rdr.Read())
+            else
             {
-                Customers.Add(new CustomerModel()
-                {
-                    Id = rdr[0].ToString(),
-                    Name = rdr[1].ToString(),
-                });
+                where = $" HAVING b.author LIKE '%{SearchAuthor}%'";
             }
+            sql += where;
         }
-        catch (Exception e)
-        {
-            Debug.Print($"An error occured ({e.Message})");
-        }
-        finally
-        {
-            
-            rdr?.Close();
-            conn.Close();
-        }
+
+        Books = DbService.GetBooks(sql);
+        Customers = DbService.GetCustomers();
     }
 
     public void OnPost()
