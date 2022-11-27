@@ -54,7 +54,8 @@ public class TransactionsModel : PageModel
             RedirectToAction("Transactions");
             return;
         }
-        var connStr = "server=localhost;port=3306;database=LibraryDb;user=lib;password=rary";
+
+        var connStr = DbService.connStr;
         var conn = new MySqlConnection(connStr);
 
         try

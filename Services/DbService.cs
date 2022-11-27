@@ -7,9 +7,13 @@ namespace LibraryDbApp.Services
 {
     public class DbService
     {
-        // As described in https://dev.mysql.com/doc/connector-net/en/connector-net-tutorials-sql-command.html
-        static string connStr = "server=localhost;port=3306;database=LibraryDb;user=lib;password=rary";
+#if DEBUG
+        public static string connStr = "server=localhost;port=3306;database=LibraryDb;user=lib;password=rary";
+#else
+        public static string connStr = "Server=MYSQL8002.site4now.net;Database=db_a908e1_mvideva;Uid=a908e1_mvideva;Pwd=Test12345678";
+#endif
 
+        // As described in https://dev.mysql.com/doc/connector-net/en/connector-net-tutorials-sql-command.html
         public static IList<BookModel> GetBooks(string sql)
         {
             MySqlConnection conn = new MySqlConnection(connStr);
