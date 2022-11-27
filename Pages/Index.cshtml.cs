@@ -9,6 +9,9 @@ namespace LibraryDbApp.Pages;
 
 public class IndexModel : PageModel
 {
+    private readonly ILogger<IndexModel> _logger;
+
+    public string Error { get; set; } = default!;
     public IList<BookModel> Books { get; set; } = default!;
     public IList<CustomerModel> Customers { get; set; } = default!;
 
@@ -26,6 +29,11 @@ public class IndexModel : PageModel
 
     [BindProperty(SupportsGet = true)]
     public string BookCheckedOutBy { get; set; } = default!;
+
+    public IndexModel(ILogger<IndexModel> logger)
+    {
+        _logger = logger;
+    }
 
     public void OnGet()
     {
@@ -83,7 +91,8 @@ public class IndexModel : PageModel
         }
         catch (Exception e)
         {
-            Debug.Print($"An error occured ({e.Message})");
+            Error = $"Failed with {BookAction}";
+            _logger.LogError($"An error occured ({e.Message})");
         }
         finally
         {

@@ -43,7 +43,6 @@ create table charges (
 	amount_due decimal(5,2),
 	payment_date datetime,
 	description varchar(50),
-	primary key(customer_id, book_id),
 	foreign key (customer_id) references customers(id) on delete cascade,
 	foreign key (book_id) references books(id) on delete cascade
 );
