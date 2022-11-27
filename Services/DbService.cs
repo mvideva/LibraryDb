@@ -22,7 +22,6 @@ namespace LibraryDbApp.Services
                 var cmd = new MySqlCommand(sql, conn);
                 rdr = cmd.ExecuteReader();
 
-
                 while (rdr.Read())
                 {
                     books.Add(new BookModel()
@@ -56,6 +55,8 @@ namespace LibraryDbApp.Services
 
             try
             {
+                conn.Open();
+
                 var sql = "SELECT id, name FROM customers ORDER BY name";
                 var cmd = new MySqlCommand(sql, conn);
                 rdr = cmd.ExecuteReader();
