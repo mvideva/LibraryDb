@@ -1,9 +1,76 @@
 ﻿@page
-@model PrivacyModel
+@model TransactionsModel
 @{
-    ViewData["Title"] = "Privacy Policy";
+    ViewData["Title"] = "Transactions";
 }
-<h1>@ViewData["Title"]</h1>
 
-<p>Use this page to detail your site's privacy policy.</p>
+<h2>Transactions</h2>
+
+<form>
+    <p>
+        Customer:
+        <select asp-for="CustomerId">
+            @foreach (var cust in Model.Customers)
+            {
+                <option value="@cust.Id">@cust.Name</option>
+            }
+        </select>
+    </p>
+    <p>
+        Book:
+        <select asp-for="BookId">
+            @foreach (var book in Model.Books)
+            {
+                <option value="@book.Id">@book.Title</option>
+            }
+        </select>
+    </p>
+    <p>
+        Staff:
+        <select asp-for="StaffId">
+            @foreach (var staff in Model.Staff)
+            {
+                <option value="@staff.Id">@staff.Name</option>
+            }
+        </select>
+    </p>
+    <input type="text" asp-for="AmountDue" />
+    <p>
+        Reason:
+        <select asp-for="Reason">
+            <option value="Late">Late</option>
+            <option value="Damaged">Damaged</option>
+            <option value="Lost">Lost</option>
+        </select>
+    </p>
+    <input type="submit" value="Submit" />
+</form>
+
+<div class="text-center">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Customer</th>
+                <th>Book</th>
+                <th>Reason</th>
+                <th>Payment Date</th>
+                <th>Payment</th>
+                <th>Completed By</th>
+            </tr>
+        </thead>
+        @foreach (var charge in Model.Charges)
+        {
+            <tr>
+                <td>@charge.CustomerName</td>
+                <td>@charge.BookName</td>
+                <td>@charge.Description</td>
+                <td>@charge.PaymentDate</td>
+                <td>@charge.AmountDue</td>
+                <td>@charge.StaffName</td>
+            </tr>
+        }
+    </table>
+</div>
+
+
 

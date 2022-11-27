@@ -80,7 +80,47 @@ namespace LibraryDbApp.Services
                 conn.Close();
             }
             return customers;
-        }   
+        }
+
+        public static IList<ChargesModel> GetCharges()
+        {
+            MySqlConnection conn = new MySqlConnection(connStr);
+            MySqlDataReader? rdr = null;
+            var charges = new List<ChargesModel>();
+
+            try
+            {
+                conn.Open();
+
+                var sql = @"SELECT cu.name, b.title, ch.description, ch.payment_date, ch.amount_due, s.name
+                            FROM charges ch
+                            LEFT JOIN customers cu ON cu.id = ch.customer_id
+                            LEFT JOIN books b ON b.id = ch.book_id
+                            LEFT JOIN staff s ON s.id = ch.staff_id
+                            ";
+                var cmd = new MySqlCommand(sql, conn);
+                rdr = cmd.ExecuteReader();
+
+                while (rdr.Read())
+                {
+                    customers.Add(new CustomerModel()
+                    {
+                        Id = rdr[0].ToString(),
+                        Name = rdr[1].ToString(),
+                    });
+                }
+            }
+            catch (Exception e)
+            {
+                Debug.Print($"An error occured ({e.Message})");
+            }
+            finally
+            {
+                rdr?.Close();
+                conn.Close();
+            }
+            return customers;
+        }
     }
 }
 
