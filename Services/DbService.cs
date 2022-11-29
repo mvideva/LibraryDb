@@ -12,6 +12,65 @@ namespace LibraryDbApp.Services
 #else
         public static string connStr = "Server=MYSQL8002.site4now.net;Database=db_a908e1_mvideva;Uid=a908e1_mvideva;Pwd=Test12345678";
 #endif
+        public static void BookCheckOut(string bookCheckedOutBy, string bookIdCheckedOut)
+        {
+            var conn = new MySqlConnection(connStr);
+
+            try
+            {
+                conn.Open();
+                var dueDate = DateTime.Now.AddDays(14).ToString("yyyy-MM-dd HH:mm:ss.fff");
+                var sql = $"INSERT INTO checkouts (customer_id, book_id, due_date) VALUES ({bookCheckedOutBy},'{bookIdCheckedOut}','{dueDate}')";
+                var cmd = new MySqlCommand(sql, conn);
+                var updated = cmd.ExecuteNonQuery();
+            }
+            finally
+            {
+                conn.Close();
+            }
+        }
+
+        public static void BookCheckIn(string bookIdCheckedOut)
+        {
+            var connStr = DbService.connStr;
+            var conn = new MySqlConnection(connStr);
+
+            try
+            {
+                conn.Open();
+                var sql = $"DELETE FROM checkouts WHERE book_id = '{bookIdCheckedOut}'";
+                var cmd = new MySqlCommand(sql, conn);
+                var updated = cmd.ExecuteNonQuery();
+            }
+            finally
+            {
+                conn.Close();
+            }
+        }
+
+        public static void ChargeCustomer(string customerId, string bookId, string staffId, string amountDue, string reason)
+        {
+            var conn = new MySqlConnection(connStr);
+
+            try
+            {
+                conn.Open();
+                var paymentDate = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff");
+                var sql = @$"INSERT INTO charges (customer_id, book_id, staff_id, amount_due, payment_date, description)
+                VALUES ({customerId},'{bookId}',{staffId},{amountDue},'{paymentDate}','{reason}')";
+
+                var cmd = new MySqlCommand(sql, conn);
+                var inserted = cmd.ExecuteNonQuery();
+                if (inserted != 1)
+                {
+                    throw new Exception("Failed registering the charge.");
+                }
+            }
+            finally
+            {
+                conn.Close();
+            }
+        }
 
         // As described in https://dev.mysql.com/doc/connector-net/en/connector-net-tutorials-sql-command.html
         public static IList<BookModel> GetBooks(string sql)
@@ -101,6 +160,7 @@ namespace LibraryDbApp.Services
                             LEFT JOIN customers cu ON cu.id = ch.customer_id
                             LEFT JOIN books b ON b.id = ch.book_id
                             LEFT JOIN staff s ON s.id = ch.staff_id
+                            ORDER BY ch.payment_date DESC
                             ";
                 var cmd = new MySqlCommand(sql, conn);
                 rdr = cmd.ExecuteReader();

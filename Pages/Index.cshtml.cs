@@ -69,25 +69,16 @@ public class IndexModel : PageModel
 
     public void OnPost()
     {
-        var connStr = DbService.connStr;
-        var conn = new MySqlConnection(connStr);
-
         try
         {
-            conn.Open();
-            string sql;
             if(BookAction.Equals("Check Out"))
             {
-                var dueDate = DateTime.Now.AddDays(14).ToString("yyyy-MM-dd HH:mm:ss.fff"); 
-                sql = $"INSERT INTO checkouts (customer_id, book_id, due_date) VALUES ({BookCheckedOutBy},'{BookIdCheckedOut}','{dueDate}')";
+                DbService.BookCheckOut(BookCheckedOutBy,BookIdCheckedOut);
             }
             else
             {
-                sql = $"DELETE FROM checkouts WHERE book_id = '{BookIdCheckedOut}'";
+                DbService.BookCheckIn(BookIdCheckedOut);
             }
-
-            var cmd = new MySqlCommand(sql, conn);
-            var updated = cmd.ExecuteNonQuery();
         }
         catch (Exception e)
         {
@@ -96,7 +87,6 @@ public class IndexModel : PageModel
         }
         finally
         {
-            conn.Close();
             OnGet();
             RedirectToAction("Index");
         }

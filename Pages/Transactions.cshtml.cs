@@ -24,7 +24,7 @@ public class TransactionsModel : PageModel
     public string BookId { get; set; } = default!;
 
     [BindProperty(SupportsGet = true)]
-    public int StaffId { get; set; } 
+    public string StaffId { get; set; } = default!;
 
     [BindProperty(SupportsGet = true)]
     public string AmountDue { get; set; } = default!;
@@ -54,23 +54,9 @@ public class TransactionsModel : PageModel
             RedirectToAction("Transactions");
             return;
         }
-
-        var connStr = DbService.connStr;
-        var conn = new MySqlConnection(connStr);
-
         try
         {
-            conn.Open();
-            var paymentDate = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff");
-            var sql = @$"INSERT INTO charges (customer_id, book_id, staff_id, amount_due, payment_date, description)
-                VALUES ({CustomerId},'{BookId}',{StaffId},{AmountDue},'{paymentDate}','{Reason}')";
-
-            var cmd = new MySqlCommand(sql, conn);
-            var inserted = cmd.ExecuteNonQuery();
-            if(inserted != 1)
-            {
-                Error = "Failed registering the charge.";
-            }
+            DbService.ChargeCustomer(CustomerId, BookId, StaffId, AmountDue, Reason);
         }
         catch (Exception e)
         {
@@ -79,7 +65,6 @@ public class TransactionsModel : PageModel
         }
         finally
         {
-            conn.Close();
             OnGet();
             RedirectToAction("Transactions");
         }
