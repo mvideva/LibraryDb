@@ -7,11 +7,15 @@
 <h2>Books</h2>
 
 <form>
-    <p>
-        Title: <input type="text" asp-for="SearchTitle" />
-        Author: <input type="text" asp-for="SearchAuthor" />
-        <input type="submit" value="Search" />        
-    </p>
+    <div class="form-group" style="margin-bottom: 1em">
+        <label for="SearchTitle">Title</label>
+        <input type="text" asp-for="SearchTitle" class="form-control" placeholder="Enter title" style="width: 30em">
+    </div>
+    <div class="form-group" style="margin-bottom: 1em">
+        <label for="SearchAuthor">Author</label>
+        <input type="text" asp-for="SearchAuthor" class="form-control" placeholder="Enter author" style="width: 30em">
+    </div>
+    <button type="submit" class="btn btn-primary">Search</button>
 </form>
 
 <h3 style="color:red">@Model.Error</h3>
