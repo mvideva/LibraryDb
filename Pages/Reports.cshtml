@@ -1,0 +1,59 @@
+@page
+@model LibraryDbApp.Pages.ReportsModel
+@{
+    ViewData["Title"] = "Reports";
+}
+
+<h4>Staff Report</h4>
+<div class="text-center">
+    <table class="table">
+        <thead>
+            <tr>
+                <th style="width:3em">Id</th>
+                <th>Name</th>
+                <th>Position</th>
+                <th>Shift Hours</th>
+                <th style="width:5em">Charges Count</th>
+                <th style="width:5em">Total Charges</th>
+                <th>Latest Charge</th>
+            </tr>
+        </thead>
+        @foreach (var staff in Model.Staff)
+        {
+            <tr>
+                <td>@staff.Id</td>
+                <td>@staff.Name</td>
+                <td>@staff.Position</td>
+                <td>@staff.ShiftHours</td>
+                <td>@staff.ChargesCount</td>
+                <td>$@staff.TotalCharges</td>
+                <td>@staff.LatestCharge</td>
+            </tr>
+        }
+    </table>
+</div>
+
+<h4>Customer Report</h4>
+<div class="text-center">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Name</th>
+                <th>Phone Number</th>
+                <th>Address</th>
+                <th>Currently Checked Out</th>
+            </tr>
+        </thead>
+        @foreach (var cust in Model.Customers)
+        {
+            <tr>
+                <td>@cust.Id</td>
+                <td>@cust.Name</td>
+                <td>@cust.Phone</td>
+                <td>@cust.Address</td>
+                <td>@cust.BooksOut book(s)</td>
+            </tr>
+        }
+    </table>
+</div>
