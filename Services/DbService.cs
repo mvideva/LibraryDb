@@ -98,10 +98,6 @@ namespace LibraryDbApp.Services
                     });
                 }
             }
-            catch (Exception e)
-            {
-                Debug.Print($"An error occured ({e.Message})");
-            }
             finally
             {
                 rdr?.Close();
@@ -132,10 +128,6 @@ namespace LibraryDbApp.Services
                         Name = rdr[1].ToString(),
                     });
                 }
-            }
-            catch (Exception e)
-            {
-                Debug.Print($"An error occured ({e.Message})");
             }
             finally
             {
@@ -178,10 +170,6 @@ namespace LibraryDbApp.Services
                     });
                 }
             }
-            catch (Exception e)
-            {
-                Debug.Print($"An error occured ({e.Message})");
-            }
             finally
             {
                 rdr?.Close();
@@ -213,10 +201,6 @@ namespace LibraryDbApp.Services
                     });
                 }
             }
-            catch (Exception e)
-            {
-                Debug.Print($"An error occured ({e.Message})");
-            }
             finally
             {
                 rdr?.Close();
@@ -246,16 +230,85 @@ namespace LibraryDbApp.Services
                     });
                 }
             }
-            catch (Exception e)
-            {
-                Debug.Print($"An error occured ({e.Message})");
-            }
             finally
             {
                 rdr?.Close();
                 conn.Close();
             }
             return books;
+        }
+
+        public static IList<StaffModel> GetStaffReport()
+        {
+            MySqlConnection conn = new MySqlConnection(connStr);
+            MySqlDataReader? rdr = null;
+            var staff = new List<StaffModel>();
+            try
+            {
+                conn.Open();
+                var sql = @"SELECT s.id, s.name, s.position, s.shift_hours, COUNT(c.amount_due), SUM(c.amount_due), MAX(c.payment_date)
+                            FROM staff s
+                            LEFT JOIN charges c ON c.staff_id = s.id
+                            GROUP BY s.id, s.name, s.position, s.shift_hours
+                            HAVING s.position != 'Janitor'; ";
+                var cmd = new MySqlCommand(sql, conn);
+                rdr = cmd.ExecuteReader();
+
+                while (rdr.Read())
+                {
+                    staff.Add(new StaffModel()
+                    {
+                        Id = rdr[0].ToString(),
+                        Name = rdr[1].ToString(),
+                        Position = rdr[2].ToString(),
+                        ShiftHours = rdr[3].ToString(),
+                        ChargesCount = rdr[4].ToString(),
+                        TotalCharges = rdr[5].ToString(),
+                        LatestCharge = rdr[6].ToString()
+                    });
+                }
+            }
+            finally
+            {
+                rdr?.Close();
+                conn.Close();
+            }
+            return staff;
+        }
+
+        public static IList<CustomerModel> GetCustomerReport()
+        {
+            MySqlConnection conn = new MySqlConnection(connStr);
+            MySqlDataReader? rdr = null;
+            var cust = new List<CustomerModel>();
+            try
+            {
+                conn.Open();
+                var sql = @"SELECT c.id, c.name, c.phone_number, c.address, COUNT(ch.customer_id)
+                            FROM customers c
+                            LEFT JOIN checkouts ch ON ch.customer_id = c.id
+                            GROUP BY c.id, c.name, c.phone_number, c.address";
+                var cmd = new MySqlCommand(sql, conn);
+                rdr = cmd.ExecuteReader();
+
+                while (rdr.Read())
+                {
+                    cust.Add(new CustomerModel()
+                    {
+                        Id = rdr[0].ToString(),
+                        Name = rdr[1].ToString(),
+                        Phone = rdr[2].ToString(),
+                        Address = rdr[3].ToString(),
+                        BooksOut = rdr[4].ToString()
+                    });
+                }
+            }
+            finally
+            {
+                rdr?.Close();
+                conn.Close();
+            }
+            return cust;
         }
     }
 }

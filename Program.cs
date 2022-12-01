@@ -9,6 +9,13 @@ public class Program
         // Add services to the container.
         builder.Services.AddRazorPages();
 
+        builder.Host.ConfigureLogging(logging =>
+        {
+            logging.ClearProviders();
+            logging.AddFile("LibraryDbApp.log");
+        }
+        );
+
         var app = builder.Build();
 
         // Configure the HTTP request pipeline.
